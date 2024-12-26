@@ -33,6 +33,7 @@ interface DaoTreasury {
 
 
 interface INonfungiblePositionManager {
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
     struct MintParams {
         address token0;
         address token1;
@@ -67,4 +68,6 @@ interface INonfungiblePositionManager {
     function collect(CollectParams calldata params) external payable returns (uint256 amount0, uint256 amount1);
 
     function safeTransferFrom(address from, address to, uint256 tokenId) external;
+
+    function ownerOf(uint256 tokenId) external view returns (address);
 }
