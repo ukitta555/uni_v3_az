@@ -9,6 +9,13 @@ contract FTXDeployer {
     
     function deploy() public {
         require (msg.sender == daoTreasury, "not treasury");
-        tokenAddress = address(new FTX(daoTreasury)); 
+        tokenAddress = address(new FTX{salt: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef}(daoTreasury)); 
     }
 }
+
+
+// daoOwner -> execute() in treasury -> deploy() -> creates an ERC20  - call #1 to execute()
+// daoOwner -> execute() in treasury -> createLP(tickLower, tickUpper) in the created ERC20 
+
+
+// deploy.ts -> parametrize tickLower tickUpper

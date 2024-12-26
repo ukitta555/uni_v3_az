@@ -7,10 +7,10 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {TickMath} from "@uniswap/v3-core/contracts/libraries/TickMath.sol";
 import {IUniswapV3Factory, INonfungiblePositionManager, IUniswapV3Pool, PoolInitializer} from "./Interfaces.sol";
 import {IERC721Receiver} from "./IERC721Receiver.sol";
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 
-contract FTX is ERC20 {
+contract FTX is ERC20, IERC721Receiver {
     // using SafeERC20 for ERC20;
     using TickMath for int24;
     uint256 public constant SUPPLY = 1_100_000_000 ether;
@@ -32,7 +32,7 @@ contract FTX is ERC20 {
     // onlyOwner 
     {
         // setup the uniswap v3 pool    
-        uint160 sqrtPriceX96 = initialTick.getSqrtRatioAtTick();
+        uint160 sqrtPriceX96 = upperTick.getSqrtRatioAtTick();
         // console.logInt(initialTick);
         // console.logInt(upperTick);
     
@@ -42,8 +42,8 @@ contract FTX is ERC20 {
 
         // console.log("here");
         // console.log("Pool ", pool);
-        // console.log(IUniswapV3Pool(pool).token0(), AR_TOKEN, ERC20(AR_TOKEN).name());
-        // console.log(IUniswapV3Pool(pool).token1(), address(this), ERC20(address(this)).name());
+        console.log(IUniswapV3Pool(pool).token0(), AR_TOKEN, ERC20(AR_TOKEN).name());
+        console.log(IUniswapV3Pool(pool).token1(), address(this), ERC20(address(this)).name());
 
 
         INonfungiblePositionManager.MintParams memory params = INonfungiblePositionManager.MintParams({
@@ -64,7 +64,6 @@ contract FTX is ERC20 {
         require(initialTick % tickSpacing == 0 && upperTick % tickSpacing == 0, "Ticks must align with tick spacing");
         require(AR_TOKEN < address(this), "LMAO");
 
-
         // console.log(allowance(address(this), address(POSITION_MANAGER)));
         ERC20(address(this)).approve(address(POSITION_MANAGER), SUPPLY / 2);
         // console.log(allowance(address(this), address(POSITION_MANAGER)));
@@ -77,7 +76,7 @@ contract FTX is ERC20 {
         // POSITION_MANAGER.safeTransferFrom(address(this), _owner, tokenId);
     } 
 
-    function onERC721Received(address, address, uint256, bytes calldata) external pure returns (bytes4) {
+    function onERC721Received(address, address, uint256, bytes calldata) override external pure returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
     }
 

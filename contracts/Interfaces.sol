@@ -5,6 +5,8 @@ pragma abicoder v2;
 interface IUniswapV3Factory {
     function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);
 
+    function getPool(address tokenA, address tokenB, uint24 fee) external view returns (address pool);
+
     function feeAmountTickSpacing(uint24 fee) external view returns (int24);
 }
 
@@ -20,8 +22,8 @@ interface PoolInitializer {
 
 interface IUniswapV3Pool {
     function initialize(uint160 sqrtPriceX96) external;
-    function token0() external returns(address pool_address);
-    function token1() external returns(address pool_address);
+    function token0() external view returns(address);
+    function token1() external view returns(address);
 
 }
 
